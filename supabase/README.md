@@ -10,6 +10,7 @@
 - 楽天デベロッパーアカウント（アプリケーション ID・アフィリエイト ID）
 - Deno（ローカル開発用）
 - Supabase CLI
+- Bun (ランタイム環境)
 
 ## 実装ステップ
 
@@ -27,6 +28,64 @@
    ```bash
    cd supabase
    supabase functions new data-fetcher
+   ```
+
+### ステップ 1.5: Bun の導入とセットアップ
+
+1. **Bun のインストール**
+
+   ```bash
+   # macOSの場合
+   curl -fsSL https://bun.sh/install | bash
+
+   # 他のプラットフォームについては公式ドキュメントを参照: https://bun.sh/docs/installation
+   ```
+
+2. **Supabase Edge Functions に Bun を使用する設定**
+
+   `supabase/functions/data-fetcher/deno.json` を編集して以下の内容を追加:
+
+   ```json
+   {
+     "runtime": "bun",
+     "tasks": {
+       "start": "bun run index.ts"
+     }
+   }
+   ```
+
+3. **ローカル開発用の Bun 設定**
+
+   プロジェクトルートに `bun.lockb` ファイルが自動生成されることを確認します。
+
+4. **Bun を使用したローカルテスト**
+
+   ```bash
+   cd supabase/functions/data-fetcher
+   bun run index.ts
+   ```
+
+5. **Bun 用の package.json の作成（オプション）**
+
+   ```bash
+   cd supabase/functions/data-fetcher
+   bun init
+   ```
+
+   作成された`package.json`を以下のように編集:
+
+   ```json
+   {
+     "name": "data-fetcher",
+     "module": "index.ts",
+     "type": "module",
+     "devDependencies": {
+       "bun-types": "latest"
+     },
+     "peerDependencies": {
+       "typescript": "^5.0.0"
+     }
+   }
    ```
 
 ### ステップ 2: エラー処理モジュールの実装
